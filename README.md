@@ -1,5 +1,5 @@
 ## How to compile
-* Configure using config.mk. Make sure the TAG is set to the proper compiler include file. For example TAG = GCCa64fx to include the file 'include_GCCa64fx.mk'. 
+* Configure using config.mk. Make sure the TAG is set to the proper compiler configuration file. For example TAG = GCCa64fx to include the file 'include_GCCa64fx.mk'. 
 * For using LIKWID (optional): LIKWID library has to be installed (https://github.com/RRZE-HPC/likwid), `ENABLE_LIKWID` has to bet to true in config.mk. Proper paths has to be set in `include_LIKWID.mk`
 * After configuration run `make` to compile
 
