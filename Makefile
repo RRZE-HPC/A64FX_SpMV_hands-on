@@ -9,7 +9,6 @@ Q         ?= @
 include $(MAKE_DIR)/config.mk
 include $(MAKE_DIR)/include_$(TAG).mk
 include $(MAKE_DIR)/include_LIKWID.mk
-include $(MAKE_DIR)/include_SPMP.mk
 INCLUDES  += -I./include
 
 VPATH     = $(SRC_DIR)
