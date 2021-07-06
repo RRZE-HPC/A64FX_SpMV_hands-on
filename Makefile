@@ -1,5 +1,6 @@
 #CONFIGURE BUILD SYSTEM
-TARGET	   = spmv-$(TAG)
+TARGET	   = spmv-SELLC-$(TAG)
+TARGET_CRS	   = spmv-CRS-$(TAG)
 BUILD_DIR  = ./$(TAG)
 SRC_DIR    = ./src
 MAKE_DIR   = ./
@@ -14,11 +15,21 @@ INCLUDES  += -I./include
 VPATH     = $(SRC_DIR)
 ASM      += $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.s,$(wildcard $(SRC_DIR)/*.cpp))
 OBJ      += $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o,$(wildcard $(SRC_DIR)/*.cpp))
+OBJ_SELLC      += $(filter-out $(BUILD_DIR)/main_crs.o, ${OBJ})
+OBJ_CRS      += $(filter-out $(BUILD_DIR)/main.o, ${OBJ})
+
 CPPFLAGS := $(CPPFLAGS) $(DEFINES) $(OPTIONS) $(INCLUDES)
 
-${TARGET}: $(BUILD_DIR) $(OBJ)
+all: ${TARGET_CRS} ${TARGET}
+
+${TARGET_CRS}: $(BUILD_DIR) $(OBJ_CRS)
+	@echo "===>  LINKING  $(TARGET_CRS)"
+	$(Q)${LINKER} ${LFLAGS} -o $(TARGET_CRS) $(OBJ_CRS) $(LIBS)
+
+
+${TARGET}: $(BUILD_DIR) $(OBJ_SELLC)
 	@echo "===>  LINKING  $(TARGET)"
-	$(Q)${LINKER} ${LFLAGS} -o $(TARGET) $(OBJ) $(LIBS)
+	$(Q)${LINKER} ${LFLAGS} -o $(TARGET) $(OBJ_SELLC) $(LIBS)
 
 asm:  $(BUILD_DIR) $(ASM)
 

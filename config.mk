@@ -1,4 +1,4 @@
 # Supported: GCC, FCC
-TAG ?= GCCa64fx
+TAG ?= GCC
 ENABLE_OPENMP ?= true
-ENABLE_LIKWID ?= false
+ENABLE_LIKWID ?= true
