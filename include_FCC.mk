@@ -7,6 +7,7 @@ OPENMP   = -Kopenmp
 endif
 
 CPPFLAGS   = -std=c++11 -Kfast -Kocl -Koptmsg=2 -Nlst=t ${OPENMP}
+#to check -Knoalias=s
 #-Ofast -ffreestanding -std=c99 $(OPENMP)
 LFLAGS   = $(OPENMP)
 DEFINES  = -D_GNU_SOURCE
