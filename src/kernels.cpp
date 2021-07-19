@@ -16,7 +16,7 @@ inline void spmv_csr_general(densemat* b, sparsemat* mat, densemat* x)
 {
 
     INFO_PRINT("CRS General");
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int row=0; row<mat->nrows; ++row)
     {
         double tmp = 0;
@@ -34,7 +34,7 @@ inline void spmv_sellC_general(densemat* b, sparsemat* mat, densemat* x)
     const int C = mat->C;
     const int  P = mat->P;
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int chunk=0; chunk<mat->nchunks; ++chunk)
     {
         for(int rowInChunk=0; rowInChunk<C; ++rowInChunk)

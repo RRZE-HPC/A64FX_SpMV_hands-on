@@ -664,7 +664,7 @@ void sparsemat::ensureDiag(double diag_val)
         rowPtr = new int[nrows+1];
 
         rowPtr[0] = rowPtr_with_diag->at(0);
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
         for(int row=0; row<nrows; ++row)
         {
             rowPtr[row+1] = rowPtr_with_diag->at(row+1);
@@ -726,7 +726,7 @@ void sparsemat::makeDiagFirst()
         rowPtr = new int[nrows+1];
 
         rowPtr[0] = rowPtr_with_diag->at(0);
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
         for(int row=0; row<nrows; ++row)
         {
             rowPtr[row+1] = rowPtr_with_diag->at(row+1);
@@ -743,7 +743,7 @@ void sparsemat::makeDiagFirst()
     delete col_with_diag;
     delete rowPtr_with_diag;
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int row=0; row<nrows; ++row)
     {
         bool diag_hit = false;
@@ -821,7 +821,7 @@ bool sparsemat::computeSymmData()
         rowPtr_symm[0] = 0;
 
         //NUMA init
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
         for(int row=0; row<nrows; ++row)
         {
             rowPtr_symm[row+1] = 0;
@@ -841,7 +841,7 @@ bool sparsemat::computeSymmData()
         val_symm = new double[nnz_symm];
 
         //With NUMA init
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
         for(int row=0; row<nrows; ++row) {
             int idx_symm = rowPtr_symm[row];
             for(int idx=rowPtr[row]; idx<rowPtr[row+1]; ++idx) {
@@ -909,7 +909,7 @@ void sparsemat::permute(int *perm, int*  invPerm)
     newRowPtr[0] = 0;
 
     //NUMA init
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int row=0; row<nrows; ++row)
     {
         newRowPtr[row+1] = 0;
@@ -932,7 +932,7 @@ void sparsemat::permute(int *perm, int*  invPerm)
 
 
     //with NUMA init
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int row=0; row<nrows; ++row)
     {
         //row permutation
@@ -1004,7 +1004,7 @@ void sparsemat::constructSellCSigma(int chunkHeight, int sigma, int pad)
     chunkLen = new int[nchunks];
     chunkPtr = new int[nchunks+1];
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int i=0; i<nchunks; ++i)
     {
         chunkLen[i] = 0;
@@ -1037,7 +1037,7 @@ void sparsemat::constructSellCSigma(int chunkHeight, int sigma, int pad)
     valSellC = new double[nnzSellC];
 
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int i=0; i<=(nchunks); ++i)
     {
         chunkPtr[i] = 0;
@@ -1049,7 +1049,7 @@ void sparsemat::constructSellCSigma(int chunkHeight, int sigma, int pad)
     }
 
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int chunk=0; chunk<nchunks; ++chunk)
     {
         for(int rowInChunk=0; rowInChunk<C; ++rowInChunk)
@@ -1121,12 +1121,12 @@ void sparsemat::NUMAinit()
        */
 
     //NUMA init
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int row=0; row<nrows+1; ++row)
     {
         newRowPtr[row] = rowPtr[row];
     }
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int row=0; row<nrows; ++row)
     {
         for(int idx=newRowPtr[row]; idx<newRowPtr[row+1]; ++idx)

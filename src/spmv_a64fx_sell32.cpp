@@ -42,7 +42,7 @@ void spmv_a64fx_sell32(densemat* b, sparsemat* mat, densemat* x)
         printf("Wrong kernel this is 512-bit SIMD wide kernel\n");
     }
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(runtime)
     for(int chunk=0; chunk<mat->nchunks; ++chunk)
     {
         uint64_t idx = 0;
@@ -112,7 +112,7 @@ void spmv_a64fx_sell32(densemat* b, sparsemat* mat, densemat* x)
         __m512d val;
         __m512d rhs = _mm512_setzero_pd();
 
-#pragma omp for schedule(static)
+#pragma omp for schedule(runtime)
         for(int chunk=0; chunk<mat->nchunks; ++chunk)
         {
             __m512d tmp0 = _mm512_setzero_pd();
@@ -168,7 +168,7 @@ void spmv_a64fx_sell32(densemat* b, sparsemat* mat, densemat* x)
 
         __m256d val;
         __m256d rhs = _mm256_setzero_pd();
-#pragma omp for schedule(static)
+#pragma omp for schedule(runtime)
         for(int chunk=0; chunk<mat->nchunks; ++chunk)
         {
 
@@ -235,7 +235,7 @@ void spmv_a64fx_sell32(densemat* b, sparsemat* mat, densemat* x)
 
         __m256d val;
         __m256d rhs = _mm256_setzero_pd();
-#pragma omp for schedule(static)
+#pragma omp for schedule(runtime)
         for(int chunk=0; chunk<mat->nchunks; ++chunk)
         {
 
