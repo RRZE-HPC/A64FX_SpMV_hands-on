@@ -164,6 +164,11 @@ int main(int argc, char * argv[])
     }
     sparsemat* mat = new sparsemat;
 
+    if(param.stat_flag >= -1)
+    {
+	    mat->statFlag = true;
+	    mat->statCount = param.stat_flag;
+    }
 
     if(param.mat_file)
     {

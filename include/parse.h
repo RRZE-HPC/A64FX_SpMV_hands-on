@@ -38,6 +38,7 @@ struct parser
     int sigma;
     int hpcg_size;
     bool RCM_flag;
+    int stat_flag;
     int numOptions;
     my_option *long_options;
     option *gnuOptions;

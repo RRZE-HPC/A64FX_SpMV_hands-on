@@ -19,8 +19,9 @@
 #endif
 #include "kernels.h"
 #include "timer.h"
+#include <map>
 
-sparsemat::sparsemat():nrows(0), nnz(0), val(NULL), rowPtr(NULL), col(NULL), nnz_symm(0), rowPtr_symm(NULL), col_symm(NULL), val_symm(NULL), chunkLen(NULL), chunkPtr(NULL), colSellC(NULL), valSellC(NULL), unrollFac(1), C(1)
+sparsemat::sparsemat():nrows(0), nnz(0), val(NULL), rowPtr(NULL), col(NULL), nnz_symm(0), rowPtr_symm(NULL), col_symm(NULL), val_symm(NULL), chunkLen(NULL), chunkPtr(NULL), colSellC(NULL), valSellC(NULL), unrollFac(1), C(1), statFlag(false), statCount(-1)
 {
 
 #pragma omp parallel
@@ -420,6 +421,45 @@ bool sparsemat::readFile(char* filename)
     for(int i=0; i<nnz; ++i)
     {
         ++nnzPerRow[row[i]];
+    }
+
+    if(statFlag)
+    {
+	    //bucket statistics
+	    std::map<int, int> bucket;
+	    for(int i=0; i<nrows; ++i)
+	    {
+		    bucket[nnzPerRow[i]] += 1;
+	    }
+
+	    printf("%5s ==> %10s, %6s, %6s\n", "Nnzr", "rows", "% row", "% nnz");
+	    int check_row = 0;
+	    int check_nnz = 0;
+	    for(auto iter=bucket.begin(); iter!=bucket.end(); ++iter)
+	    {
+		    printf("%5d ==> %10d, %6.2f, %6.2f\n", iter->first, iter->second, iter->second*100.0/((double)nrows), iter->second*iter->first*100.0/((double)nnz));
+		    check_row += iter->second;
+		    check_nnz += iter->second*iter->first;
+	    }
+
+	    if((check_row != nrows) || (check_nnz != nnz))
+	    {
+
+		    printf("Error in bucket statistics\n");
+	    }
+
+	    if(statCount>=0)
+	    {
+		    FILE* statFile = fopen ("stat_file.txt","w");
+		    fprintf(statFile, "rows with Nnzr = %d\n", statCount);
+		    for(int i=0; i<nrows; ++i)
+		    {
+			    if(nnzPerRow[i] == statCount)
+			    {
+			    	fprintf(statFile, "%d\n", i);
+			    }
+		    }
+	    }
     }
 
     rowPtr[0] = 0;

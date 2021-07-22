@@ -22,7 +22,7 @@ my_option::my_option()
 {
 }
 
-parser::parser():mat_file(NULL), iter(100), validate(false), tol(1e-4), prgname("a.out"), chunkHeight(32), sigma(1), hpcg_size(128), RCM_flag(false), numOptions(9)
+parser::parser():mat_file(NULL), iter(100), validate(false), tol(1e-4), prgname("a.out"), chunkHeight(32), sigma(1), hpcg_size(128), RCM_flag(false), stat_flag(-2), numOptions(10)
 {
     long_options = new my_option[numOptions+1];
 
@@ -31,11 +31,12 @@ parser::parser():mat_file(NULL), iter(100), validate(false), tol(1e-4), prgname(
     long_options[2] = {"validate",no_argument,       0,  'v', "Validate" };
     long_options[3] = {"tol",     required_argument, 0,  'T', "Tolerance for validation" };
     long_options[4] = {"help",    no_argument,       0,  'h', "Prints this help informations" };
-    long_options[5] = {"Chunkheight",    required_argument,       0,  'C', "Chunk height of SELL-C-sigma" };
+    long_options[5] = {"Chunkheight",    required_argument,       0,  'C', "Chunk height of SELL-C-sigma. Only 32 implemented currently" };
     long_options[6] = {"Sigma",    required_argument,       0,  'Z', "Sigma of SELL-C-sigma"};
     long_options[7] = {"Size", required_argument, 0, 'S', "size of HPCG (only cubic grid allowed)"};
-    long_options[8] = {"RCM", no_argument, 0, 'R', "Do RCM permutation"};
-    long_options[9] = {0,         0,                 0,   0,  0 };
+    long_options[8] = {"RCM", no_argument, 0, 'R', "Do RCM permutation. You need to install Intel SpMP library before"};
+    long_options[9] = {"stat", optional_argument, NULL, 's', "Print statistics of nnz distribution"};
+    long_options[10] = {0,         0,                 0,   0,  0 };
 
     gnuOptions = new option[numOptions+1];
 
@@ -56,7 +57,7 @@ bool parser::parse_arg(int argc, char **argv)
     prgname = argv[0];
     while (1) {
         int option_index = 0, c;
-        c = getopt_long(argc, argv, "0:m:i:T:C:Z:S:vRh",
+        c = getopt_long(argc, argv, "0:m:i:T:C:Z:S:s:vRh",
                 gnuOptions, &option_index);
 
         if (c == -1)
@@ -113,6 +114,18 @@ bool parser::parse_arg(int argc, char **argv)
             case 'R':
                 {
                     RCM_flag = true;
+                    break;
+                }
+            case 's':
+                {
+			if(optarg == NULL)
+			{
+				stat_flag = -1;
+			}
+			else
+			{
+				stat_flag = atoi(optarg);
+			}
                     break;
                 }
 	    default:

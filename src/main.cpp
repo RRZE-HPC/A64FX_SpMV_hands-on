@@ -114,7 +114,7 @@ void operator delete(void * p)
     asprintf(&capsKernel, "%s", #kernel);\
     capitalize(capsKernel);\
     /*   printf("%10s(%d) : %8.4f GFlop/s ; Time = %8.5f s\n", capsKernel, myRank, flopPerNnz*nnz_update/(time), time);*/\
-    printf("Code balance formula : V_meas/(%d*%d*2) [Bytes/Flop]\n", iter, mat->nnz);\
+    printf("Code balance formula : V_meas/(%d*%d*2) [Bytes/Flop]\n", iter, mat->nnzSellC);\
     printf("%10s : %8.4f GFlop/s ; Time = %8.5f s\n", capsKernel, flopPerNnz*nnz_update/(time), time);\
     free(capsKernel);\
 }\
@@ -164,6 +164,11 @@ int main(int argc, char * argv[])
     }
     sparsemat* mat = new sparsemat;
 
+    if(param.stat_flag >= -1)
+    {
+	    mat->statFlag = true;
+	    mat->statCount = param.stat_flag;
+    }
 
     if(param.mat_file)
     {

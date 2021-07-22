@@ -51,6 +51,8 @@ struct sparsemat
     double *valSellC;
     int unrollFac; //for kernel, just a work-around
     int nthreads;
+    bool statFlag;
+    int statCount;
 
     bool readFile(char* filename);
     bool writeFile(char* filename);
